@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+   <name>CleanArchivedEmails</name>
+   <key>cleanarchivedemails</key>
+   <state>stable</state>
+    <logo>https://raw.githubusercontent.com/tomolimo/cleanarchivedemails/master/plugin.png</logo>
+   <description>
+      <short>
+         <en><![CDATA[This plugin can be used to delete old eMails from IMAP archive folders]]></en>
+      </short>
+      <long>
+         <en><![CDATA[This plugin is designed to purge old eMails from IMAP archive folders. It adds a configuration tab per receivers and per archive folders (one for Accepted folder and one for Refused folder). On this configuration tab one can set the days to keep eMails in archive folders.]]></en>
+      </long>
+   </description>
+   <homepage>https://github.com/tomolimo/cleanarchivedemails</homepage>
+   <download>https://github.com/tomolimo/cleanarchivedemails/releases</download>
+   <issues>https://github.com/tomolimo/cleanarchivedemails/issues</issues>
+   <readme>https://github.com/tomolimo/cleanarchivedemails/wiki</readme>
+   <authors>
+      <author>Olivier Moron</author>
+   </authors>
+   <versions>
+     <version>
+       <num>1.0.0</num>
+       <compatibility>9.1</compatibility>
+     </version>
+   </versions>
+   <langs>
+      <lang>en_GB</lang>
+   </langs>
+   <license><![CDATA[GPL v2+]]></license>
+   <tags>
+         <en>
+            <tag>Mailgate</tag>
+            <tag>MailCollector</tag>
+            <tag>Ageing emails</tag>
+            <tag>Archived emails</tag>
+            <tag>Old emails</tag>
+            <tag>emails</tag>
+         </en>
+   </tags>
+</root>
