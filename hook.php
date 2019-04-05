@@ -26,6 +26,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 --------------------------------------------------------------------------
  */
 
+
 /**
  * Summary of plugin_cleanarchivedemails_install
  * @return boolean
@@ -33,8 +34,8 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 function plugin_cleanarchivedemails_install() {
     global $DB;
 
-   if (!$DB->tableExists("glpi_plugin_cleanarchivedemails_mailcollectors")) {
-      $query = "CREATE TABLE `glpi_plugin_cleanarchivedemails_mailcollectors` (
+    if (!$DB->tableExists("glpi_plugin_cleanarchivedemails_mailcollectors")) {
+       $query = "CREATE TABLE `glpi_plugin_cleanarchivedemails_mailcollectors` (
 				`id` INT(11) NOT NULL AUTO_INCREMENT,
 				`mailcollectors_id` INT(11) NOT NULL,
 				`days_before_clean_accepted_folder` INT(11) NULL DEFAULT '-1',
@@ -46,7 +47,7 @@ function plugin_cleanarchivedemails_install() {
 			ENGINE=MyISAM;
 			";
 
-      $DB->query($query) or die("error creating glpi_plugin_cleanarchivedemails_mailcollectors " . $DB->error());
+       $DB->query($query) or die("error creating glpi_plugin_cleanarchivedemails_mailcollectors " . $DB->error());
    }
 
    // CRON
@@ -101,7 +102,13 @@ function plugin_cleanarchivedemails_getAddSearchOptions($itemtype) {
 function plugin_item_purge_cleanarchivedemails($item) {
    $clean = new PluginCleanarchivedemailsMailCollector;
 
-   if ($clean->getFromDBByQuery(" WHERE mailcollectors_id=".$item->getID())) {
+   //if ($clean->getFromDBByQuery(" WHERE mailcollectors_id=".$item->getID())) {
+   if ($clean->getFromDBByRequest([
+       'WHERE'  => [
+           'mailcollectors_id'  => $item->getID(),                
+       ],             
+   ]))
+   {
       $clean->deleteFromDB(true);
    }
 }
