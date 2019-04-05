@@ -6,9 +6,11 @@
     <logo>https://raw.githubusercontent.com/tomolimo/cleanarchivedemails/master/plugin.png</logo>
    <description>
       <short>
+         <cs><![CDATA[Tento zásuvný modul je možné použít pro mazání starých e-mailů z IMAP archivních složek]]></cs>
          <en><![CDATA[This plugin can be used to delete old eMails from IMAP archive folders]]></en>
       </short>
       <long>
+         <cs><![CDATA[Tento zásuvný modul je navržen pro vyčištění starých e-mailů z IMAP archivních složek. Přidá kartu s nastavením pro každý z přijímačů a archivní složky (jednu pro složku Přijaté a druhou pro Odmítnuté). Na této kartě nastavení je možné nastavit počet dnů po které v archivní složce ponechávat e-maily.]]></cs>
          <en><![CDATA[This plugin is designed to purge old eMails from IMAP archive folders. It adds a configuration tab per receivers and per archive folders (one for Accepted folder and one for Refused folder). On this configuration tab one can set the days to keep eMails in archive folders.]]></en>
       </long>
    </description>
@@ -30,10 +32,19 @@
       </version>
    </versions>
    <langs>
+      <lang>cs_CZ</lang>
       <lang>en_GB</lang>
    </langs>
    <license><![CDATA[GPL v2+]]></license>
    <tags>
+         <cs>
+            <tag>E-mailová brána</tag>
+            <tag>E-mailový sběrač</tag>
+            <tag>Stárnoucí e-maily</tag>
+            <tag>Archivované e-maily</tag>
+            <tag>Staré e-maily</tag>
+            <tag>e-maily</tag>
+         </cs>
          <en>
             <tag>Mailgate</tag>
             <tag>MailCollector</tag>
