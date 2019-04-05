@@ -31,6 +31,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 // ----------------------------------------------------------------------
 // Original Author of file: Olivier Moron
 // ----------------------------------------------------------------------
+define ("PLUGIN_CLEANARCHIVESEMAILS_VERSION", "1.1.1");
 
 /**
  * Init the hooks of the plugin
@@ -41,7 +42,7 @@ function plugin_init_cleanarchivedemails() {
 
    $PLUGIN_HOOKS['csrf_compliant']['cleanarchivedemails'] = true;
 
-   Plugin::registerClass('PluginCleanarchivedemailsMailCollector', array('addtabon' => 'MailCollector'));
+   Plugin::registerClass('PluginCleanarchivedemailsMailCollector', ['addtabon' => 'MailCollector']);
 
    $PLUGIN_HOOKS['item_purge']['cleanarchivedemails'] = ['MailCollector' => 'plugin_item_purge_cleanarchivedemails'];
    $PLUGIN_HOOKS['pre_item_update']['cleanarchivedemails'] = ['PluginCleanarchivedemailsMailCollector' => 'plugin_pre_item_update_cleanarchivedemails'];
@@ -55,12 +56,12 @@ function plugin_init_cleanarchivedemails() {
  */
 function plugin_version_cleanarchivedemails() {
     //global $LANG;
-    return array('name'           => __('Archived eMail clean', 'cleanarchivedemails'), //$LANG['plugin_cleanarchivedemails']["name"],
-                 'version'        => '1.0.0',
+    return ['name'           => __('Archived eMail clean', 'cleanarchivedemails'), //$LANG['plugin_cleanarchivedemails']["name"],
+                 'version'        => PLUGIN_CLEANARCHIVESEMAILS_VERSION,
                  'author'         => 'Olivier Moron',
                  'license'        => 'GPLv2+',
                  'homepage'       => 'https://github.com/tomolimo/cleanarchivedemails/',
-                 'minGlpiVersion' => '9.1');
+                 'minGlpiVersion' => '9.2'];
 }
 
 
@@ -70,8 +71,8 @@ function plugin_version_cleanarchivedemails() {
  */
 function plugin_cleanarchivedemails_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION, '9.1', 'lt')) {
-      echo "This plugin requires GLPI >= 9.1";
+   if (version_compare(GLPI_VERSION, '9.2', 'lt')) {
+      echo "This plugin requires GLPI >= 9.2";
       return false;
    }
     return true;
@@ -84,7 +85,7 @@ function plugin_cleanarchivedemails_check_prerequisites() {
  * @param boolean $verbose for verbose mode
  * @return boolean
  */
-function plugin_cleanarchivedemails_check_config($verbose=false) {
+function plugin_cleanarchivedemails_check_config($verbose = false) {
     return true;
 }
 

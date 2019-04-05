@@ -26,37 +26,15 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 --------------------------------------------------------------------------
  */
 
-if (!function_exists('arTableExists')) {
-   function arTableExists($table) {
-      global $DB;
-      if (method_exists( $DB, 'tableExists')) {
-         return $DB->tableExists($table);
-      } else {
-         return TableExists($table);
-      }
-   }
-}
-
-if (!function_exists('arFieldExists')) {
-   function arFieldExists($table, $field, $usecache = true) {
-      global $DB;
-      if (method_exists( $DB, 'fieldExists')) {
-         return $DB->fieldExists($table, $field, $usecache);
-      } else {
-         return FieldExists($table, $field, $usecache);
-      }
-   }
-}
-
 /**
  * Summary of plugin_cleanarchivedemails_install
  * @return boolean
  */
 function plugin_cleanarchivedemails_install() {
-	global $DB ;
+    global $DB;
 
-	if (!arTableExists("glpi_plugin_cleanarchivedemails_mailcollectors")) {
-		$query = "CREATE TABLE `glpi_plugin_cleanarchivedemails_mailcollectors` (
+   if (!$DB->tableExists("glpi_plugin_cleanarchivedemails_mailcollectors")) {
+      $query = "CREATE TABLE `glpi_plugin_cleanarchivedemails_mailcollectors` (
 				`id` INT(11) NOT NULL AUTO_INCREMENT,
 				`mailcollectors_id` INT(11) NOT NULL,
 				`days_before_clean_accepted_folder` INT(11) NULL DEFAULT '-1',
@@ -68,13 +46,13 @@ function plugin_cleanarchivedemails_install() {
 			ENGINE=MyISAM;
 			";
 
-		$DB->query($query) or die("error creating glpi_plugin_cleanarchivedemails_mailcollectors " . $DB->error());
-	}
+      $DB->query($query) or die("error creating glpi_plugin_cleanarchivedemails_mailcollectors " . $DB->error());
+   }
 
    // CRON
-   CronTask::Register('PluginCleanarchivedemailsMailcollector', 'cleanarchivedemails', DAY_TIMESTAMP, array('param' => 5, 'state' => CronTask::STATE_DISABLE, 'mode' => CronTask::MODE_EXTERNAL));
+   CronTask::Register('PluginCleanarchivedemailsMailcollector', 'cleanarchivedemails', DAY_TIMESTAMP, ['param' => 5, 'state' => CronTask::STATE_DISABLE, 'mode' => CronTask::MODE_EXTERNAL]);
 
-	return true;
+    return true;
 }
 
 /**
@@ -82,11 +60,11 @@ function plugin_cleanarchivedemails_install() {
  * @return boolean
  */
 function plugin_cleanarchivedemails_uninstall() {
-	global $DB;
+    global $DB;
 
    CronTask::Unregister('PluginCleanarchivedemailsMailcollector');
 
-	return true;
+    return true;
 }
 
 
@@ -97,26 +75,26 @@ function plugin_cleanarchivedemails_uninstall() {
  */
 function plugin_cleanarchivedemails_getAddSearchOptions($itemtype) {
 
-    $tab = array();
-    if ($itemtype == 'MailCollector') {
-       $tab['cleanarchivedemails'] = __('Clean archived eMails', 'cleanarchivedemails') ;
+    $tab = [];
+   if ($itemtype == 'MailCollector') {
+      $tab['cleanarchivedemails'] = __('Clean archived eMails', 'cleanarchivedemails');
 
-       $tab[700]['table']      = 'glpi_plugin_cleanarchivedemails_mailcollectors';
-       $tab[700]['field']      = 'days_before_clean_accepted_folder';
-       $tab[700]['name']       = __('Days for accepted', 'cleanarchivedemails');
-       $tab[700]['searchtype'] = 'equals';
-       $tab[700]['massiveaction'] = false;
-       $tab[700]['joinparams'] = array('jointype' => 'child');
+      $tab[700]['table']      = 'glpi_plugin_cleanarchivedemails_mailcollectors';
+      $tab[700]['field']      = 'days_before_clean_accepted_folder';
+      $tab[700]['name']       = __('Days for accepted', 'cleanarchivedemails');
+      $tab[700]['searchtype'] = 'equals';
+      $tab[700]['massiveaction'] = false;
+      $tab[700]['joinparams'] = ['jointype' => 'child'];
 
-       $tab[701]['table']      = 'glpi_plugin_cleanarchivedemails_mailcollectors';
-       $tab[701]['field']      = 'days_before_clean_refused_folder';
-       $tab[701]['name']       = __('Days for refused', 'cleanarchivedemails');
-       $tab[701]['searchtype'] = 'equals';
-       $tab[701]['massiveaction'] = false;
-       $tab[701]['joinparams'] = array('jointype' => 'child');
+      $tab[701]['table']      = 'glpi_plugin_cleanarchivedemails_mailcollectors';
+      $tab[701]['field']      = 'days_before_clean_refused_folder';
+      $tab[701]['name']       = __('Days for refused', 'cleanarchivedemails');
+      $tab[701]['searchtype'] = 'equals';
+      $tab[701]['massiveaction'] = false;
+      $tab[701]['joinparams'] = ['jointype' => 'child'];
 
-    }
-    return $tab ;
+   }
+    return $tab;
 }
 
 

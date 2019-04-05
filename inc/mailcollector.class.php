@@ -25,7 +25,7 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
       if ($host['type'] == "imap") {
          return __('IMAP folder purge', 'cleanarchivedemails', 'cleanarchivedemails'); //$LANG['plugin_cleanarchivedemails']['mailcollector']['tabname'];
       }
-      return '' ;
+      return '';
    }
 
     /**
@@ -35,7 +35,7 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
      * @param mixed      $withtemplate has template
      * @return mixed
      */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'MailCollector') {
          self::showForm($item);
@@ -57,22 +57,20 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
 
       $clean->showFormHeader();
 
-//      echo "<input type=hidden name=id value='".$clean->getID()."'/>";
+      //      echo "<input type=hidden name=id value='".$clean->getID()."'/>";
       echo "<input type=hidden name=mailcollectors_id value='".$item->getID()."'/>";
-
       echo "<tr class='tab_bg_1'>";
-//      echo "<td colspan=2>".$LANG['plugin_cleanarchivedemails']['mailcollector']['nbdaysOK']."&nbsp;:</td><td colspan=2>";
+      //      echo "<td colspan=2>".$LANG['plugin_cleanarchivedemails']['mailcollector']['nbdaysOK']."&nbsp;:</td><td colspan=2>";
       echo "<td colspan=2>".__("Number of days to keep eMails in 'Accepted mail archive folder' (set -1 for infinite)", 'cleanarchivedemails')."</td><td colspan=2>";
       echo "<input type='text' name='days_before_clean_accepted_folder' value='".$clean->fields['days_before_clean_accepted_folder']."'>";
       echo "</td></tr>\n";
-
       echo "<tr class='tab_bg_1'>";
-//      echo "<td colspan=2>".$LANG['plugin_cleanarchivedemails']['mailcollector']['nbdaysNOK']."&nbsp;:</td><td colspan=2>";
+      //      echo "<td colspan=2>".$LANG['plugin_cleanarchivedemails']['mailcollector']['nbdaysNOK']."&nbsp;:</td><td colspan=2>";
       echo "<td colspan=2>".__("Number of days to keep eMails in 'Refused mail archive folder' (set -1 for infinite)", 'cleanarchivedemails')."</td><td colspan=2>";
       echo "<input type='text' name='days_before_clean_refused_folder' value='".$clean->fields['days_before_clean_refused_folder']."'>";
       echo "</td></tr>\n";
 
-      $clean->showFormButtons(array('candel'=>false));
+      $clean->showFormButtons(['candel'=>false]);
 
       return false;
    }
@@ -88,9 +86,9 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
 
       switch ($name) {
          case 'cleanarchivedemails' :
-            return array('description' => __('Clean archived emails from Receiver IMAP folders', 'cleanarchivedemails')); // $LANG['plugin_cleanarchivedemails']['cron']['cleanarchivedemails']['description'] );
+            return ['description' => __('Clean archived emails from Receiver IMAP folders', 'cleanarchivedemails')]; // $LANG['plugin_cleanarchivedemails']['cron']['cleanarchivedemails']['description'] );
       }
-      return array();
+      return [];
    }
 
    /**
@@ -107,10 +105,11 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
       $actionCode = 0; // by default
       $error = false;
       $task->setVolume(0); // start with zero
+      $dbu = new DbUtils();
 
       // browse the MailCollector list and if IMAP and number of days to keep emails is  >= 0 then delete old emails
-      $cleans = getAllDatasFromTable( 'glpi_plugin_cleanarchivedemails_mailcollectors', "days_before_clean_accepted_folder <> -1 OR days_before_clean_refused_folder <> -1") ;
-      foreach($cleans as $clean){
+      $cleans = $dbu->getAllDataFromTable( 'glpi_plugin_cleanarchivedemails_mailcollectors', "days_before_clean_accepted_folder <> -1 OR days_before_clean_refused_folder <> -1");
+      foreach ($cleans as $clean) {
          $mailgate = new MailCollector;
          $mailgate->getFromDB( $clean['mailcollectors_id'] );
          if ($mailgate->fields['is_active'] == 1) {
@@ -148,7 +147,7 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
     */
    static function deleteEmailsFromMailbox($mailgate, $mailbox, $days) {
 
-      $volume = 0 ;
+      $volume = 0;
       if ($days > -1 && $mailgate->fields[$mailbox] != '') {
          preg_match('/^(?\'constring\'{.*?})/', $mailgate->fields['host'], $matches);
          $connect = $matches['constring'];
@@ -160,7 +159,7 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
          // search and mark old emails for deletion
          $emails_to_delete = imap_search( $mailgate->marubox, "BEFORE \"".date ( "d M Y", strToTime ( "-$days days" ) )."\"", SE_UID );
          if ($emails_to_delete !== false) {
-            foreach($emails_to_delete as $msguid) {
+            foreach ($emails_to_delete as $msguid) {
                // mark email as deleted
                imap_delete($mailgate->marubox, $msguid, FT_UID);
                $volume++;
