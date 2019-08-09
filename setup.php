@@ -31,7 +31,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 // ----------------------------------------------------------------------
 // Original Author of file: Olivier Moron
 // ----------------------------------------------------------------------
-define ("PLUGIN_CLEANARCHIVESEMAILS_VERSION", "1.2.1");
+define ("PLUGIN_CLEANARCHIVESEMAILS_VERSION", "1.3.1");
 
 /**
  * Init the hooks of the plugin
@@ -61,7 +61,7 @@ function plugin_version_cleanarchivedemails() {
                  'author'         => 'Olivier Moron',
                  'license'        => 'GPLv2+',
                  'homepage'       => 'https://github.com/tomolimo/cleanarchivedemails/',
-                 'minGlpiVersion' => '9.3'];
+                 'minGlpiVersion' => '9.4'];
 }
 
 
@@ -71,8 +71,8 @@ function plugin_version_cleanarchivedemails() {
  */
 function plugin_cleanarchivedemails_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION, '9.3', 'lt')) {
-      echo "This plugin requires GLPI >= 9.3";
+   if (version_compare(GLPI_VERSION, '9.4', 'lt')) {
+      echo "This plugin requires GLPI >= 9.4";
       return false;
    }
     return true;

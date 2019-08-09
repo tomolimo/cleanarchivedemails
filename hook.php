@@ -44,12 +44,29 @@ function plugin_cleanarchivedemails_install() {
          	UNIQUE INDEX `mailcollectors_id` (`mailcollectors_id`)
 			)
 			COLLATE='utf8_general_ci'
-			ENGINE=MyISAM;
+			ENGINE=InnoDB;
 			";
 
        $DB->query($query) or die("error creating glpi_plugin_cleanarchivedemails_mailcollectors " . $DB->error());
-   }
-
+   }else {
+      $res = $DB->request([
+                     'SELECT' => 'ENGINE',
+                     'FROM'   => 'information_schema.TABLES',
+                     'WHERE'  => [
+                        'AND' => [
+                           'TABLE_SCHEMA' => $DB->dbdefault, 
+                           'TABLE_NAME' => 'glpi_plugin_cleanarchivedemails_mailcollectors'
+                        ]
+                     ]
+         ]);
+      if($res->numrows() == 1){
+         $row = $res->next();
+         if($row['ENGINE'] == 'MyISAM') {
+            $query = "ALTER TABLE glpi_plugin_cleanarchivedemails_mailcollectors ENGINE = InnoDB";
+            $DB->query($query) or die("error updating ENGINE in glpi_plugin_cleanarchivedemails_mailcollectors " . $DB->error());
+         }
+      }
+    }
    // CRON
    CronTask::Register('PluginCleanarchivedemailsMailcollector', 'cleanarchivedemails', DAY_TIMESTAMP, ['param' => 5, 'state' => CronTask::STATE_DISABLE, 'mode' => CronTask::MODE_EXTERNAL]);
 
