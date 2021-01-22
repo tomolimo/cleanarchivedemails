@@ -34,8 +34,8 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 function plugin_cleanarchivedemails_install() {
     global $DB;
 
-    if (!$DB->tableExists("glpi_plugin_cleanarchivedemails_mailcollectors")) {
-       $query = "CREATE TABLE `glpi_plugin_cleanarchivedemails_mailcollectors` (
+   if (!$DB->tableExists("glpi_plugin_cleanarchivedemails_mailcollectors")) {
+      $query = "CREATE TABLE `glpi_plugin_cleanarchivedemails_mailcollectors` (
 				`id` INT(11) NOT NULL AUTO_INCREMENT,
 				`mailcollectors_id` INT(11) NOT NULL,
 				`days_before_clean_accepted_folder` INT(11) NULL DEFAULT '-1',
@@ -47,26 +47,26 @@ function plugin_cleanarchivedemails_install() {
 			ENGINE=InnoDB;
 			";
 
-       $DB->query($query) or die("error creating glpi_plugin_cleanarchivedemails_mailcollectors " . $DB->error());
-   }else {
+      $DB->query($query) or die("error creating glpi_plugin_cleanarchivedemails_mailcollectors " . $DB->error());
+   } else {
       $res = $DB->request([
                      'SELECT' => 'ENGINE',
                      'FROM'   => 'information_schema.TABLES',
                      'WHERE'  => [
                         'AND' => [
-                           'TABLE_SCHEMA' => $DB->dbdefault, 
+                           'TABLE_SCHEMA' => $DB->dbdefault,
                            'TABLE_NAME' => 'glpi_plugin_cleanarchivedemails_mailcollectors'
                         ]
                      ]
          ]);
-      if($res->numrows() == 1){
+      if ($res->numrows() == 1) {
          $row = $res->next();
-         if($row['ENGINE'] == 'MyISAM') {
+         if ($row['ENGINE'] == 'MyISAM') {
             $query = "ALTER TABLE glpi_plugin_cleanarchivedemails_mailcollectors ENGINE = InnoDB";
             $DB->query($query) or die("error updating ENGINE in glpi_plugin_cleanarchivedemails_mailcollectors " . $DB->error());
          }
       }
-    }
+   }
    // CRON
    CronTask::Register('PluginCleanarchivedemailsMailcollector', 'cleanarchivedemails', DAY_TIMESTAMP, ['param' => 5, 'state' => CronTask::STATE_DISABLE, 'mode' => CronTask::MODE_EXTERNAL]);
 
@@ -122,10 +122,9 @@ function plugin_item_purge_cleanarchivedemails($item) {
    //if ($clean->getFromDBByQuery(" WHERE mailcollectors_id=".$item->getID())) {
    if ($clean->getFromDBByRequest([
        'WHERE'  => [
-           'mailcollectors_id'  => $item->getID(),                
-       ],             
-   ]))
-   {
+           'mailcollectors_id'  => $item->getID(),
+       ],
+   ])) {
       $clean->deleteFromDB(true);
    }
 }

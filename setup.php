@@ -3,7 +3,7 @@
  * -------------------------------------------------------------------------
 CleanArchivedEmails plugin
 
-Copyright (C) 2018 by Raynet SAS a company of A.Raymond Network.
+Copyright (C) 2021 by Raynet SAS a company of A.Raymond Network.
 
 http://www.araymond.com
 -------------------------------------------------------------------------
@@ -31,7 +31,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 // ----------------------------------------------------------------------
 // Original Author of file: Olivier Moron
 // ----------------------------------------------------------------------
-define ("PLUGIN_CLEANARCHIVESEMAILS_VERSION", "1.3.1");
+define ("PLUGIN_CLEANARCHIVESEMAILS_VERSION", "2.0.0");
 
 /**
  * Init the hooks of the plugin
@@ -55,13 +55,20 @@ function plugin_init_cleanarchivedemails() {
  * @return array
  */
 function plugin_version_cleanarchivedemails() {
-    //global $LANG;
-    return ['name'           => __('Archived eMail clean', 'cleanarchivedemails'), //$LANG['plugin_cleanarchivedemails']["name"],
-                 'version'        => PLUGIN_CLEANARCHIVESEMAILS_VERSION,
-                 'author'         => 'Olivier Moron',
-                 'license'        => 'GPLv2+',
-                 'homepage'       => 'https://github.com/tomolimo/cleanarchivedemails/',
-                 'minGlpiVersion' => '9.4'];
+
+   return [
+      'name'           => __('Archived eMail clean', 'cleanarchivedemails'),
+      'version'        => PLUGIN_CLEANARCHIVESEMAILS_VERSION,
+      'author'         => 'Olivier Moron',
+      'license'        => 'GPLv2+',
+      'homepage'       => 'https://github.com/tomolimo/cleanarchivedemails/',
+      'requirements' => [
+         'glpi' => [
+            'min' => '9.5',
+            'max' => '9.6'
+         ]
+      ]
+   ];
 }
 
 
@@ -71,11 +78,13 @@ function plugin_version_cleanarchivedemails() {
  */
 function plugin_cleanarchivedemails_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION, '9.4', 'lt')) {
-      echo "This plugin requires GLPI >= 9.4";
+   if (version_compare(GLPI_VERSION, '9.5', 'lt')
+       && version_compare(GLPI_VERSION, '9.6', 'ge')) {
+      echo "This plugin requires GLPI >= 9.5 and < 9.6";
       return false;
+   } else {
+      return true;
    }
-    return true;
 }
 
 
@@ -86,6 +95,6 @@ function plugin_cleanarchivedemails_check_prerequisites() {
  * @return boolean
  */
 function plugin_cleanarchivedemails_check_config($verbose = false) {
-    return true;
+   return true;
 }
 
