@@ -5,7 +5,7 @@
  *
  * mailcollector description.
  *
- * @author morono
+ * @author Tomolimo
  */
 
 use Laminas\Mail;
@@ -18,12 +18,12 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
    /**
     * Summary of connect
     * @param array $config is the array returned by Toolbox::parseMailServerConnectString($host)
-    * @param string $login 
-    * @param string $passwd 
-    * @throws Exception 
+    * @param string $login
+    * @param string|null $passwd
+    * @throws Exception
     * @return bool|Mail\Protocol\Imap|null
     */
-   static function connect(array $config, string $login, string $passwd) {
+   static function connect(array $config, string $login, ?string $passwd) {
 
       try {
          $protocol = Toolbox::getMailServerProtocolInstance($config['type']);
@@ -57,11 +57,10 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
-      $host = Toolbox::parseMailServerConnectString($item->fields["host"]);
-
-      if ($host['type'] == "imap") {
-         return __('IMAP folder purge', 'cleanarchivedemails', 'cleanarchivedemails');
+      if (!strstr($item->fields['host'], "/pop")) {
+         return __('IMAP folder purge', 'cleanarchivedemails');
       }
+
       return '';
    }
 
@@ -161,9 +160,9 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
          $mailcollector->getFromDB($clean['mailcollectors_id']);
          if ($mailcollector->fields['is_active'] == 1) {
             $config = Toolbox::parseMailServerConnectString($mailcollector->fields["host"]);
-            if ($config['type'] == 'imap') {
+            if (!strstr($mailcollector->fields["host"], "/pop")) {
                $protocol = self::connect($config, $mailcollector->fields["login"], Toolbox::sodiumDecrypt($mailcollector->fields['passwd']));
-               
+
                $volume = self::deleteEmailsFromFolder($protocol, $mailcollector->fields[MailCollector::ACCEPTED_FOLDER], $clean['days_before_clean_accepted_folder']);
                if ($volume > 0) {
                   $task->addVolume($volume);
@@ -189,10 +188,10 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
 
    /**
     * Summary of deleteEmailsFromFolder
-    * @param Mail\Protocol\Imap $protocol 
-    * @param string $folder 
-    * @param int $days 
-    * @throws Exception 
+    * @param Mail\Protocol\Imap $protocol
+    * @param string $folder
+    * @param int $days
+    * @throws Exception
     * @return int
     */
    static function deleteEmailsFromFolder(Mail\Protocol\Imap $protocol, string $folder, int $days) {
@@ -202,7 +201,8 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
          // select folder to perform the search
          $protocol->select($folder);
 
-         $emails_to_delete = $protocol->search(['BEFORE', date("d-M-Y", strToTime("-$days days"))]);
+         // https://datatracker.ietf.org/doc/html/rfc9051#section-6.4.4
+         $emails_to_delete = $protocol->search(['SENTBEFORE', date("d-M-Y", strToTime("-$days days"))]);
          if (is_array($emails_to_delete)) {
             foreach ($emails_to_delete as $msg_id) {
                // mark email as deleted
@@ -214,7 +214,7 @@ class PluginCleanarchivedemailsMailCollector extends CommonDBTM {
             }
 
             // expunge here
-            if (! $protocol->expunge()) {
+            if (!$protocol->expunge()) {
                throw new \Exception('message marked as deleted, but could not expunge');
             }
          }
