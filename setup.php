@@ -31,7 +31,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 // ----------------------------------------------------------------------
 // Original Author of file: Olivier Moron
 // ----------------------------------------------------------------------
-define ("PLUGIN_CLEANARCHIVESEMAILS_VERSION", "2.0.0");
+define ("PLUGIN_CLEANARCHIVESEMAILS_VERSION", "2.0.2");
 
 /**
  * Init the hooks of the plugin
